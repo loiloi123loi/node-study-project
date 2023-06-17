@@ -1,30 +1,46 @@
-const express = require("express");
 
-const app = express();
+const express = require('express')
+const app = express()
 
-const port = 5000;
+let { people } = require('./data')
 
-const logger = require("./logger");
-const authorize = require("./authorize");
+// static assets
+app.use(express.static('./methods_public'))
 
-// app.use([logger, authorize]);
-// app.use(logger);
-// app.use("/api", logger);
+// parse form data
+app.use(express.urlencoded({ extended: false }))
 
-app.use(express.static("./public"));
+// parse json
+app.use(express.json())
 
-// req => middleware => res
+app.get('/api/people', (req, res) => {
+    res.status(200).json({ sucess: true, data: people })
+})
 
-app.get("/", (req, res) => {
-    console.log(req.user);
-    res.send("index.html");
-});
+app.post('/api/people', (req, res) => {
+    const { name } = req.body
+    if (!name) {
+        res.status(400).json({ sucess: false, msg: 'please provide name value' })
+    }
+    res.status(201).send({ sucess: true, person: name })
+})
 
-app.get("/about", (req, res) => {
-    console.log(req.user);
-    res.send("About Page");
-});
+app.post('/api/postman/people', (req, res) => {
+    const { name } = req.body
+    if (!name) {
+        res.status(400).json({ sucess: false, msg: 'please provide name value' })
+    }
+    res.status(201).send({ sucess: true, data: [...people, name] })
+})
 
-app.listen(port, () => {
-    console.log("server listen on port " + port);
-});
+app.post('/login', (req, res) => {
+    let { name } = req.body
+    if (name) {
+        return res.status(200).send(`<h1> Welcome ${name}</h1>`)
+    }
+    res.status(401).send('<h1> Please Provide Credentials</h1>')
+})
+
+app.listen(5000, () => {
+    console.log('Server is listening on port 5000....')
+})
