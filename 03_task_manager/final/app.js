@@ -4,6 +4,8 @@ const app = express()
 const connectDB = require('./db/connect')
 const tasks = require('./routes/task')
 require('dotenv').config()
+const notFound = require('./middleware/not-found')
+const errorHandlerMiddleware = require('./middleware/error-handle')
 
 app.use(express.static('./public'))
 app.use(express.json())
@@ -14,7 +16,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/tasks', tasks)
 
-const port = 5000
+app.use(notFound)
+app.use(errorHandlerMiddleware)
+
+const port = process.env.PORT || 4000
 
 const start = async () => {
     await connectDB(process.env.DATABASE_URI)
