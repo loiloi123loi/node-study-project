@@ -20,7 +20,6 @@ const jobsRouter = require('./routes/jobs')
 // error handler
 const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleWare = require('./middleware/error-handler')
-
 const authenticateUser = require('./middleware/authentication')
 
 app.set('trust proxy', 1)
