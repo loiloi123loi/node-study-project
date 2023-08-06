@@ -28,7 +28,6 @@ const login = async (req, res) => {
     }
     const isPassTrue = await user.comparePassword(password)
     if (!isPassTrue) {
-        console.log('check')
         throw new UnauthenticatedError('Invalid Credentials')
     }
     const token = user.createJWT()
@@ -46,7 +45,7 @@ const login = async (req, res) => {
 const updateUser = async (req, res) => {
     const { name, email, lastName, location } = req.body
     if (!email || !name || !lastName || !location) {
-        throw new BadRequest('Please provide all values')
+        throw new BadRequestError('Please provide all values')
     }
     const user = await User.findOneAndUpdate(
         { _id: req.user.id },
